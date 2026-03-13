@@ -1,82 +1,86 @@
 #include <bits/stdc++.h>
 using namespace std;
+// using u128 = __int128;
+using u64 = unsigned long long;
+#define SPIDERMAN                 \
+    ios_base::sync_with_stdio(0); \
+    cin.tie(0);                   \
+    cout.tie(0);
+#define int long long
+#define loop(i, b, n) for (int i = b; i < n; i++)
+#define rloop(i, b, n) for (int i = b; i >= n; i--)
+#define p(s) cout << s << endl
+#define all(x) x.begin(), x.end()
+#define pb push_back 
 
-#define fast_io ios_base::sync_with_stdio(false); cin.tie(nullptr);
-#define ll long long
-#define pb push_back
-#define all(x) (x).begin(), (x).end()
-#define loop(i,a,b) for(int i=(a); i<(b); i++)
-#define rloop(i,a,b) for(int i=(a); i>=(b); i--)
+#define map(mp) map<int, int> mp;
 
-const int MOD = 1e9 + 7;
-const int INF = 1e8;
+#define getarray(arr)\
+    int arr[n];\
+    loop(i, 0, n) cin >> arr[i];
 
-ll gcd(ll a, ll b) { return b ? gcd(b, a % b) : a; }
-ll lcm(ll a, ll b) { return a / gcd(a, b) * b; }
-ll modpow(ll a, ll b, ll mod=MOD) {
-    ll res = 1;
-    while(b){
-        if(b & 1) res = res * a % mod;
-        a = a * a % mod;
-        b >>= 1;
-    }
-    return res;
-}
-ll modinv(ll a, ll mod = MOD) {
-return modpow(a, mod - 2, mod);
-}
-int f(int i,int j,vector<vector<char>> &a){
-   if(i==0 && j==0) return a[0][0]-'A';
-   int cost=a[i][j]-'A';
-   int up=1e6;
-   if(i-1>=0) up=f(i-1,j,a);
-   int left=1e6;
-   if(j-1>=0) left=f(i,j-1,a);
+#define mex(v) ([&](){ unordered_set<int> st(all(v)); int x=0; while(st.count(x)) x++; return x; }())
 
-   return cost+min(up,left);
-}
-void solve(){
-    int n; cin >> n;
-    vector<vector<char>> a(n,vector<char>(n));
-    loop(i,0,n) {
-        string s;
-        cin>>s;
-        loop(j,0,n){
-            a[i][j]=s[j];
+void just_win_today(){
+    int n;cin>>n;
+    vector<vector<char>>grid(n,vector<char>(n));
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            cin>>grid[i][j];
         }
     }
-    vector<vector<int>> dp(n+2,vector<int>(n+2,1e9));
-     dp[n][n] = a[n-1][n-1]-'A';
-    for(int i=n;i>=1;i--){
-        for(int j=n;j>=1;j--){
-
-            if(i==n && j==n) continue;
-
-            int cost = a[i-1][j-1]-'A';
-
-            dp[i][j] = cost + min(dp[i+1][j], dp[i][j+1]);
+    vector<vector<int>>visited(n,vector<int>(n,-1));
+    string ans="";
+    ans+=grid[0][0];
+    queue<pair<int,int>>qq;
+    qq.push({0,0});
+    int temp=0;
+    for(int i=1;i<2*n-1;i++){
+        char best='Z';
+        vector<pair<int,int>>check;
+        while(!qq.empty()){
+            auto q=qq.front();
+            qq.pop();
+            int x=q.first,y=q.second;
+            if(x+1<n){
+                check.pb({x+1,y});
+                best=min(best,grid[x+1][y]);
+            }
+            if(y+1<n){
+                check.pb({x,y+1});
+                best=min(best,grid[x][y+1]);
+            }
         }
+        temp++;
+        for(auto q:check){
+            int x=q.first,y=q.second;
+            if(grid[x][y]==best && visited[x][y]!=temp){
+                visited[x][y]=temp;
+                qq.push({x,y});
+            }
+        }
+        ans+=best;
     }
-    string ans;
-    ans+=a[0][0];
-    int i=1,j=1;
-    while(i!=n || j!=n){
 
-        if(i==n) j++;
-        else if(j==n) i++;
-        else if(dp[i+1][j] < dp[i][j+1]) i++;
-        else j++;
-
-        ans += a[i-1][j-1];
-    }
+    p(ans);
     
-    cout<<ans;
+    
 }
 
-int main(){
-    fast_io;
-    int t=1;
-   // cin >> t;
-    while(t--) solve();
+
+
+/*-------------------------------------------------------------------------------------------------------------------------------------*/
+
+signed main()
+{
+    SPIDERMAN
+    int t = 1;
+    // cin >> t;
+    // facts();
+    //check prime using miller robin with isPrime()... for 
+    while (t--)
+    {
+        just_win_today();
+    }
     return 0;
 }
