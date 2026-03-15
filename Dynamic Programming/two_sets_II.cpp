@@ -25,29 +25,42 @@ ll modpow(ll a, ll b, ll mod=MOD) {
 ll modinv(ll a, ll mod = MOD) {
 return modpow(a, mod - 2, mod);
 }
+// ll f(int i,int sum){
+//     if(sum==0) return 1;
+//     if(i==0 || sum<0) return 0;
+//     ll take=f(i-1,sum-i);
+//     ll skip=f(i-1,sum);
 
+//     return (take+skip)%MOD;
+
+// }
 void solve(){
-    string s;
-    cin>>s;
-    int i=0,n=s.length();
-    int maxi=0;
-    while(i<n){
-        char c=s[i];
-        int j=i;
-        while(i<n && c==s[j]){
-            j++;
-        }
-        maxi=max(maxi,j-i);
-        if(j==i) i++;
-        else i=j;
+    ll n; cin >> n;
+    if(n<=2 || (n*(n+1))%4){
+        cout<<0;
+        return;
     }
-    cout<<maxi;
+   ll sum=(n*(n+1))/4;
+   vector<vector<ll>> dp(n+1,vector<ll>(sum+1,0));
+   for(int i=0;i<=n;i++) dp[i][0]=1;
+    for(int i=1;i<=n;i++){
+        for(int s=1;s<=sum;s++){
+             ll take=0;
+             if(s-i>=0) take=dp[i-1][s-i];
+    ll skip=dp[i-1][s];
+
+    dp[i][s] =(take+skip)%MOD;
+
+        }
+    }
+   ll ans=dp[n][sum]%MOD;
+   cout<<(ans*modinv(2))%MOD;
 }
 
 int main(){
     fast_io;
     int t=1;
-    //cin >> t;
+   // cin >> t;
     while(t--) solve();
     return 0;
 }
